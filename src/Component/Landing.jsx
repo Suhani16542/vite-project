@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 
 
@@ -23,9 +24,11 @@ function Landing() {
 
           {/* 🔹 Buttons */}
           <div className="flex flex-wrap justify-center md:justify-start gap-4">
+            <Link to="/login">
             <button className="bg-yellow-400 text-purple-800 font-semibold px-6 py-2 rounded-full hover:bg-yellow-300 transition">
               Get Started
             </button>
+            </Link>
             <button className="bg-white text-purple-700 font-semibold px-6 py-2 rounded-full hover:bg-opacity-90 transition">
               Get Demo
             </button>
