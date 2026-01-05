@@ -1,107 +1,141 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react"; // icons
+import { Mail, Lock } from "lucide-react";
+import api from "../api/axios";
+import { useDispatch } from "react-redux";
+import { LoginSuccess } from "../features/auth/authSlice";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/");
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await api.post("/user/login", formData);
+     console.log("LOGIN RESPONSE 👉", res.data);
+      // Redux store update
+      dispatch(LoginSuccess(res.data));
+
+      // Role nikaalna (safe way)
+      const role = res.data?.user?.role;
+
+      if (role === "admin") {
+        navigate("/adminDashboard");
+      } else if (role === "employee") {
+        navigate("/employee");
+      } else if (role === "subadmin") {
+        navigate("/subadminDashboard");
+      } else if (role === "user") {
+        navigate("/userDashboard");
+      } else {
+        setError("Invalid user role");
+      }
+    } catch (err) {
+      if (err.response) {
+        setError(
+          err.response.data?.message ||
+            err.response.data?.errors?.[0] ||
+            "Login failed"
+        );
+      } else {
+        setError("Server not responding");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center 
-    bg-gradient-to from-purple-600 via-pink-500 to-purple-600 text-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 p-4">
+      <div className="bg-white rounded-2xl p-10 max-w-md w-full shadow-lg">
 
-      {/* FORM BOX */}
-      <div className="bg-white rounded-2xl shadow-lg border border-purple-200 p-10 w-full max-w-md text-black">
-
-        <h2 className="text-3xl font-bold text-center text-pink-500  mb-2">
+        <h2 className="text-3xl font-bold text-center text-pink-500 mb-4">
           Welcome Back 👋
         </h2>
-        <p className="text-center  mb-8">
-          Login to continue your journey
-        </p>
+
+        {error && (
+          <p className="bg-red-100 text-red-600 p-3 rounded-lg text-center mb-4">
+            {error}
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* EMAIL */}
-          <div className="space-y-1">
-            <label className="block text-white font-medium">Email</label>
-            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl bg-white/80 
-            focus-within:ring-2 focus-within:ring-pink-400">
+          <div>
+            <label className="block font-medium mb-1">Email</label>
+            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl">
               <Mail className="w-5 h-5 text-gray-700" />
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="w-full bg-transparent outline-none text-black"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter email"
+                className="w-full outline-none"
                 required
               />
             </div>
           </div>
 
           {/* PASSWORD */}
-          <div className="space-y-1">
-            <label className="block text-white font-medium">Password</label>
-            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl bg-white/80 
-            focus-within:ring-2 focus-within:ring-pink-400">
+          <div>
+            <label className="block font-medium mb-1">Password</label>
+            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl">
               <Lock className="w-5 h-5 text-gray-700" />
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="w-full bg-transparent outline-none text-black"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter password"
+                className="w-full outline-none"
                 required
               />
             </div>
           </div>
 
-          {/* FORGOT PASSWORD */}
-          <div className="text-right mt-3">
-            <Link 
-              to="/forgot" 
-              className="text-yellow-200 hover:text-yellow-300 font-medium transition"
-            >
+          <div className="text-right">
+            <Link to="/forgot" className="text-sm text-pink-500">
               Forgot Password?
             </Link>
           </div>
 
-          {/* LOGIN BUTTON */}
-          <Link to="/Dasboard">
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white font-semibold 
-            hover:bg-green-700 transition-all duration-300 shadow-md"
+            disabled={loading}
+            className="w-full py-3 rounded-xl bg-pink-500 text-white font-semibold hover:bg-pink-600 transition"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
-          </Link>
         </form>
 
-        {/* OR SECTION */}
-        <div className="text-center text-white">
-          <div className="flex items-center my-5">
-            <div className="flex-1 h-px bg-white/40"></div>
-            <span className="px-3 text-white text-sm font-medium">OR</span>
-            <div className="flex-1 h-px bg-white/40"></div>
-          </div>
-
-          <Link 
-            to="/signup" 
-            className="text-yellow-200 hover:text-yellow-300 font-medium transition"
-          >
-            Don't have an account? Sign Up
+        <p className="text-center mt-6">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="text-pink-500 font-medium">
+            Sign Up
           </Link>
-        </div>
-
+        </p>
       </div>
     </div>
   );
 }
-

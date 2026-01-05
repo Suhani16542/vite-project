@@ -1,50 +1,73 @@
 import React, { useEffect, useState } from "react";
-import { Bell, User2, MoreVertical } from "lucide-react";
+import { Bell, MoreVertical, LogOut, Settings, User } from "lucide-react";
+import { useSelector } from "react-redux";
 
-export default function Header({ username = "Your Name" }) {
+export default function Header() {
   const [dateTime, setDateTime] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const update = () => {
       const now = new Date();
-      const options = {
-        weekday: "long",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      };
-      setDateTime(now.toLocaleString("en-IN", options));
+      setDateTime(
+        now.toLocaleString("en-IN", {
+          weekday: "long",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      );
     };
 
     update();
-    const interval = setInterval(update, 60000);
-    return () => clearInterval(interval);
+    const timer = setInterval(update, 60000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
-    <header className="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white h-24 md:h-26 flex items-center justify-between px-4 sm:px-6 md:px-8 shadow-lg">
+    <header className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 px-6 shadow-md flex items-center justify-between rounded-b-2xl">
 
-      {/* LEFT SECTION */}
-      <div className="flex flex-col leading-tight text-sm sm:text-base md:text-lg">
-        <h2 className="font-semibold truncate">{username}</h2>
-        <p className="opacity-80 truncate">{dateTime}</p>
+      {/* LEFT */}
+      <div>
+        <h2 className="text-lg font-semibold">
+          Welcome {user?.username || ""}
+        </h2>
+        <p className="text-white/80 text-sm">{dateTime}</p>
       </div>
 
-      {/* RIGHT SECTION */}
-      <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
-        <button className="hover:opacity-80 transition p-1 md:p-2">
-          <Bell size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
-        </button>
-        <button className="hover:opacity-80 transition p-1 md:p-2">
-          <User2 size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
-        </button>
-        <button className="hover:opacity-80 transition p-1 md:p-2">
-          <MoreVertical size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" />
-        </button>
-      </div>
+      {/* RIGHT */}
+      <div className="flex items-center gap-5 relative">
+        <Bell className="w-6 h-6" />
 
+        {/* Avatar */}
+        <div className="w-9 h-9 rounded-full bg-white text-blue-700 flex items-center justify-center font-bold">
+          <p>{user?.username?.charAt(0).toUpperCase()}</p>
+        </div>
+
+        <div className="relative">
+          <button onClick={() => setMenuOpen(!menuOpen)}>
+            <MoreVertical className="w-6 h-6" />
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white text-blue-700 rounded-lg shadow-lg py-2">
+              <button className="px-4 py-2 flex gap-2 w-full hover:bg-blue-50">
+                <User size={16} /> Profile
+              </button>
+              <button className="px-4 py-2 flex gap-2 w-full hover:bg-blue-50">
+                <Settings size={16} /> Settings
+              </button>
+              <button className="px-4 py-2 flex gap-2 w-full text-red-600 hover:bg-red-50">
+                <LogOut size={16} /> Logout
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </header>
   );
 }
