@@ -31,107 +31,98 @@ export default function Login() {
 
     try {
       const res = await api.post("/user/login", formData);
-     console.log("LOGIN RESPONSE 👉", res.data);
-      // Redux store update
+
       dispatch(LoginSuccess(res.data));
 
-      // Role nikaalna (safe way)
-      const role = res.data?.user?.role;
+      localStorage.setItem("userId", res.data.user.id);
+      localStorage.setItem("role", res.data.user.role);
 
-      if (role === "admin") {
-        navigate("/adminDashboard");
-      } else if (role === "employee") {
-        navigate("/employee");
-      } else if (role === "subadmin") {
-        navigate("/subadminDashboard");
-      } else if (role === "user") {
-        navigate("/userDashboard");
-      } else {
-        setError("Invalid user role");
-      }
+      const role = res.data.user.role;
+
+      if (role === "admin") navigate("/adminDashboard");
+      else if (role === "employee") navigate("/employee");
+      else if (role === "subadmin") navigate("/subadminDashboard");
+      else if (role === "user") navigate("/userDashboard");
+      else setError("Invalid user role");
     } catch (err) {
-      if (err.response) {
-        setError(
-          err.response.data?.message ||
-            err.response.data?.errors?.[0] ||
-            "Login failed"
-        );
-      } else {
-        setError("Server not responding");
-      }
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.errors?.[0] ||
+          "Login failed"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 p-4">
-      <div className="bg-white rounded-2xl p-10 max-w-md w-full shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#020617] to-[#052e16] p-4">
+      <div className="bg-[#020617] border border-[#14532D] rounded-2xl p-8 sm:p-10 max-w-md w-full shadow-2xl">
 
-        <h2 className="text-3xl font-bold text-center text-pink-500 mb-4">
+        <h2 className="text-3xl font-bold text-center text-[#22C55E] mb-6">
           Welcome Back 👋
         </h2>
 
         {error && (
-          <p className="bg-red-100 text-red-600 p-3 rounded-lg text-center mb-4">
+          <p className="bg-red-900/40 text-red-400 p-3 rounded-lg text-center mb-4">
             {error}
           </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* EMAIL */}
+          {/* Email */}
           <div>
-            <label className="block font-medium mb-1">Email</label>
-            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl">
-              <Mail className="w-5 h-5 text-gray-700" />
+            <label className="block font-medium mb-1 text-gray-300">
+              Email
+            </label>
+            <div className="flex items-center gap-2 px-4 py-3 border border-[#14532D] rounded-xl bg-black">
+              <Mail className="w-5 h-5 text-[#22C55E]" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter email"
-                className="w-full outline-none"
+                className="w-full outline-none bg-transparent text-gray-200"
                 required
               />
             </div>
           </div>
 
-          {/* PASSWORD */}
+          {/* Password */}
           <div>
-            <label className="block font-medium mb-1">Password</label>
-            <div className="flex items-center gap-2 px-4 py-3 border rounded-xl">
-              <Lock className="w-5 h-5 text-gray-700" />
+            <label className="block font-medium mb-1 text-gray-300">
+              Password
+            </label>
+            <div className="flex items-center gap-2 px-4 py-3 border border-[#14532D] rounded-xl bg-black">
+              <Lock className="w-5 h-5 text-[#22C55E]" />
               <input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter password"
-                className="w-full outline-none"
+                className="w-full outline-none bg-transparent text-gray-200"
                 required
               />
             </div>
           </div>
 
-          <div className="text-right">
-            <Link to="/forgot" className="text-sm text-pink-500">
-              Forgot Password?
-            </Link>
-          </div>
-
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-pink-500 text-white font-semibold hover:bg-pink-600 transition"
+            className="w-full py-3 rounded-xl bg-[#22C55E] text-black font-semibold hover:bg-[#16A34A] transition disabled:opacity-60"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <p className="text-center mt-6">
+        <p className="text-center mt-6 text-gray-400">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-pink-500 font-medium">
+          <Link
+            to="/signup"
+            className="text-[#22C55E] font-medium hover:underline"
+          >
             Sign Up
           </Link>
         </p>

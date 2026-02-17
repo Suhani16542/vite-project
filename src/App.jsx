@@ -9,10 +9,11 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Forgot from './Pages/Forgot';
 import ForgotVerify from './Pages/ForgotVerify';
+
 import OtpMiddle from './Pages/OtpMiddle';
 import UserPenal from './Pages/UserPenal';
 
-// ✅ Admin Dashboard Imports (case sensitive)
+// ✅ Admin Dashboard Imports
 import AdminDashboard from './Pages/adminDashboard/AdminDashboard.jsx';
 import AdminHome from './Pages/adminDashboard/AdminHome.jsx';
 import AllUsers from './Pages/adminDashboard/AllUsers.jsx';
@@ -22,6 +23,7 @@ import FormManagement from './Pages/adminDashboard/FormManagement.jsx';
 import Billing from './Pages/adminDashboard/Billing.jsx';
 import Profile from './Pages/adminDashboard/Profile.jsx';
 import Settings from './Pages/adminDashboard/Settings.jsx';
+import Category from "./Pages/adminDashboard/Category.jsx";
 
 // ✅ Subadmin Dashboard Imports
 import SubadminDashboard from './Pages/subadminDashboard/SubadminDashboard.jsx';
@@ -48,74 +50,117 @@ import UserPending from './Pages/userDashboard/UserPanding.jsx';
 import UserHistory from './Pages/userDashboard/UserHistory.jsx';
 import UserCommunication from './Pages/userDashboard/UserCommunication.jsx';
 
-import Footer from './Component/Footer.jsx';
 import MyChange from './mychanges/MyChange.jsx';
 import ProtectedRoute from './Component/ProtectedRoute.jsx';
 
+import FormLayout from './Pages/adminDashboard/FormLayout.jsx';
+import FormCreate from './Pages/adminDashboard/FormCreate.jsx';
+
+// ✅ PUBLIC FORMS PAGES (jo humne banayi thi)
+import FormCategoryPage from './Component/Forms/FormCategoryPage.jsx';
+import FormSubCategoryPage from './Component/Forms/FormSubCategoryPage.jsx';
+import PublicFormList from './Component/Forms/publicFormList.jsx';
+
+import About from './Pages/About.jsx';
+import Contact from './Pages/Contact.jsx';
+import SearchResults from './Pages/SearchResults.jsx';
+import ViewFormDetails from './Pages/adminDashboard/ViewFormDetails.jsx';
+import EditFormModal from './Pages/adminDashboard/EditFormModal.jsx';
+import ApplyForm from './Component/Forms/ApplyForm.jsx';
+import FormDetail from './Pages/FormDetail.jsx';
+
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          {/* NAVBAR WRAPPER */}
-          <Route path="/" element={<Navbar />}>
-            <Route index element={<Landing />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
-            <Route path="otp-verify" element={<OtpVerify />} />
-            <Route path="forgot" element={<Forgot />} />
-            <Route path="forgot-verify" element={<OtpMiddle />} />
-            <Route path="forgot-reset" element={<ForgotVerify />} />
-            <Route path="dashboard" element={<UserPenal />} />
-             <Route path="mychange" element={<MyChange/>} />
-          </Route>
+    <BrowserRouter>
+      <Routes>
 
-          {/* ADMIN ROUTES */}
-           <Route element={<ProtectedRoute/>}>
-          <Route path="adminDashboard" element={<AdminDashboard />}>
-            <Route index element={<AdminHome />} />
-            <Route path="users" element={<AllUsers />} />
-            <Route path="subadmin" element={<AllsubAdmin />} />
-            <Route path="employee" element={<Allemployee />} />
-            <Route path="form-request" element={<FormManagement />} />
-            <Route path="billing" element={<Billing />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="settings" element={<Settings />} />
-              
-          </Route>
-          </Route>
+        {/* NAVBAR WRAPPER */}
+        <Route path="/" element={<Navbar />}>
+          <Route index element={<Landing />} />
+            <Route path="search" element={<SearchResults/> } />
+            <Route path='formdetial' element={<FormDetail/>}/>
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route path="about" element={<About />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="otp-verify" element={<OtpVerify />} />
+          <Route path="forgot" element={<Forgot />} />
+          <Route path="forgot-verify" element={<OtpMiddle />} />
+          <Route path="forgot-reset" element={<ForgotVerify />} />
+          <Route path="dashboard" element={<UserPenal />} />
+          <Route path="mychange" element={<MyChange />} />
 
-          {/* SUBADMIN ROUTES */}
-          <Route path="subadminDashboard" element={<SubadminDashboard />}>
-            <Route index element={<SubAdminHome />} />
-            <Route path="request-tracking" element={<RequestTracking />} />
-            <Route path="communication" element={<SubCommunication />} />
-            <Route path="employee-workload" element={<EmployeeWorkload />} />
-            <Route path="request-from-admin" element={<RequestFromAdmin />} />
-            <Route path="teams" element={<TeamsManagement />} />
-          </Route>
+          {/* ✅ PUBLIC FORMS ROUTING (FIXED) */}
+          <Route path="forms" element={<FormCategoryPage />} />
+          <Route path="forms/:mainCategory" element={<FormSubCategoryPage />} />
+          <Route
+            path="forms/:mainCategory/:subCategory"
+            element={<PublicFormList />}
+          />
+          <Route path="/form/:slug" element={<ApplyForm />} />
 
-          {/* EMPLOYEE ROUTES */}
-          <Route path="employee" element={<EmployeeDashboard />}>
-            <Route index element={<EmployeeHome/>}/>
-            <Route path="communication" element={<Communication />} />
-            <Route path="completed" element={<CompletedRequests />} />
-            <Route path="pending" element={<PendingRequests />} />
-            <Route path="inbox" element={<RequestInbox />} />
-          </Route>
+        </Route>
 
-          {/* USER DASHBOARD ROUTES */}
-          <Route path='userDashboard' element={<UserDashboard/>}>
-            <Route index element={<UserHome/>}/>
-            <Route path='Form' element={<UserForm/>}/>
-            <Route path='Panding' element={<UserPending/>}/>
-            <Route path='History' element={<UserHistory/>}/>
-            <Route path='Communication' element={<UserCommunication/>}/>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      {/* <Footer/> */}
-    </>
+        {/* ADMIN ROUTES */}
+       <Route element={<ProtectedRoute />}>
+  <Route path="adminDashboard" element={<AdminDashboard />}>
+    <Route index element={<AdminHome />} />
+
+    <Route path="users" element={<AllUsers />} />
+    <Route path="subadmin" element={<AllsubAdmin />} />
+    <Route path="employee" element={<Allemployee />} />
+    <Route path="category" element={<Category />} />
+
+    {/* FORM REQUEST */}
+    <Route path="form-request" element={<FormLayout />}>
+      <Route index element={<FormManagement />} />
+
+      <Route path="FormCreate" element={<FormCreate />} />
+
+      {/* ✅ FIXED ROUTE */}
+      <Route
+        path="viewdetails/:id"
+        element={<ViewFormDetails />}
+      />
+    </Route>
+
+    <Route path="billing" element={<Billing />} />
+    <Route path="profile" element={<Profile />} />
+    <Route path="settings" element={<Settings />} />
+  </Route>
+</Route>
+
+
+        {/* SUBADMIN ROUTES */}
+        <Route path="subadminDashboard" element={<SubadminDashboard />}>
+          <Route index element={<SubAdminHome />} />
+          <Route path="request-tracking" element={<RequestTracking />} />
+          <Route path="communication" element={<SubCommunication />} />
+          <Route path="employee-workload" element={<EmployeeWorkload />} />
+          <Route path="request-from-admin" element={<RequestFromAdmin />} />
+          <Route path="teams" element={<TeamsManagement />} />
+        </Route>
+
+        {/* EMPLOYEE ROUTES */}
+        <Route path="employee" element={<EmployeeDashboard />}>
+          <Route index element={<EmployeeHome />} />
+          <Route path="communication" element={<Communication />} />
+          <Route path="completed" element={<CompletedRequests />} />
+          <Route path="pending" element={<PendingRequests />} />
+          <Route path="inbox" element={<RequestInbox />} />
+        </Route>
+
+        {/* USER DASHBOARD ROUTES */}
+        <Route path="userDashboard" element={<UserDashboard />}>
+          <Route index element={<UserHome />} />
+          <Route path="Form" element={<UserForm />} />
+          <Route path="Panding" element={<UserPending />} />
+          <Route path="History" element={<UserHistory />} />
+          <Route path="Communication" element={<UserCommunication />} />
+        </Route>
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 

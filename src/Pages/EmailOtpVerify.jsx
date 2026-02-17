@@ -2,8 +2,6 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 
 export default function EmailOtpVerify({ user }) {
-
-  // ✅ FIX 1: email empty hona chahiye
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [step, setStep] = useState(1);
@@ -11,9 +9,6 @@ export default function EmailOtpVerify({ user }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const inputRefs = useRef([]);
-
-  console.log("verifying email for user:", user);
-  console.log("Email state:", email);
 
   /* ================= SEND OTP ================= */
   const sendOtp = async () => {
@@ -28,7 +23,6 @@ export default function EmailOtpVerify({ user }) {
       setLoading(true);
       setMessage("");
 
-      // ✅ FIX 2: sendBy me actual email bhejo
       const res = await axios.post(
         "http://localhost:3000/api/v1/user/send-otp",
         {
@@ -46,7 +40,7 @@ export default function EmailOtpVerify({ user }) {
     }
   };
 
-  /* ================= OTP INPUT LOGIC ================= */
+  /* ================= OTP INPUT ================= */
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (!/^\d?$/.test(value)) return;
@@ -86,7 +80,6 @@ export default function EmailOtpVerify({ user }) {
       setLoading(true);
       setMessage("");
 
-      // ✅ FIX 3: yaha bhi actual email bhejo
       const res = await axios.post(
         "http://localhost:3000/api/v1/user/verify-otp",
         {
@@ -104,10 +97,10 @@ export default function EmailOtpVerify({ user }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-[#020617] to-[#052e16] p-4">
+      <div className="bg-[#020617] border border-[#14532D] p-8 rounded-2xl shadow-2xl w-full max-w-md">
 
-        <h2 className="text-xl font-bold text-center text-blue-700 mb-6">
+        <h2 className="text-2xl font-bold text-center text-[#22C55E] mb-6">
           Verify Email
         </h2>
 
@@ -122,11 +115,11 @@ export default function EmailOtpVerify({ user }) {
                 setEmailError("");
               }}
               placeholder="Enter your email"
-              className="w-full p-3 border rounded-lg"
+              className="w-full p-3 rounded-xl border border-[#14532D] bg-black text-gray-200 outline-none"
             />
 
             {emailError && (
-              <p className="text-sm mt-1 text-red-600">
+              <p className="text-sm mt-2 text-red-400">
                 {emailError}
               </p>
             )}
@@ -134,7 +127,7 @@ export default function EmailOtpVerify({ user }) {
             <button
               onClick={sendOtp}
               disabled={loading}
-              className="w-full py-3 mt-4 text-white rounded-lg font-semibold bg-blue-600 hover:bg-blue-700"
+              className="w-full py-3 mt-5 rounded-xl bg-[#22C55E] text-black font-semibold hover:bg-[#16A34A] transition disabled:opacity-60"
             >
               {loading ? "Sending OTP..." : "Send OTP"}
             </button>
@@ -144,11 +137,15 @@ export default function EmailOtpVerify({ user }) {
         {/* ================= STEP 2 ================= */}
         {step === 2 && (
           <>
-            <p className="text-sm text-gray-600 mb-4 text-center">
-              Enter 6-digit OTP sent to <b>{email}</b>
+            <p className="text-sm text-gray-400 mb-5 text-center">
+              Enter 6-digit OTP sent to <br />
+              <span className="text-[#22C55E] font-medium">{email}</span>
             </p>
 
-            <div className="flex justify-between gap-2 mb-6" onPaste={handlePaste}>
+            <div
+              className="flex justify-between gap-2 mb-6"
+              onPaste={handlePaste}
+            >
               {otp.map((_, index) => (
                 <input
                   key={index}
@@ -157,7 +154,7 @@ export default function EmailOtpVerify({ user }) {
                   ref={(el) => (inputRefs.current[index] = el)}
                   onChange={(e) => handleChange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="w-12 h-12 text-center text-lg border rounded-lg focus:outline-none focus:border-blue-600"
+                  className="w-12 h-12 text-center text-lg rounded-lg border border-[#14532D] bg-black text-gray-200 focus:outline-none focus:border-[#22C55E]"
                 />
               ))}
             </div>
@@ -165,7 +162,7 @@ export default function EmailOtpVerify({ user }) {
             <button
               onClick={verifyOtp}
               disabled={loading || otp.includes("")}
-              className="w-full py-3 text-white rounded-lg font-semibold bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+              className="w-full py-3 rounded-xl bg-[#22C55E] text-black font-semibold hover:bg-[#16A34A] transition disabled:opacity-50"
             >
               {loading ? "Verifying..." : "Verify OTP"}
             </button>
@@ -173,7 +170,7 @@ export default function EmailOtpVerify({ user }) {
         )}
 
         {message && (
-          <p className="text-center text-sm mt-4 text-blue-600">
+          <p className="text-center text-sm mt-5 text-[#22C55E]">
             {message}
           </p>
         )}

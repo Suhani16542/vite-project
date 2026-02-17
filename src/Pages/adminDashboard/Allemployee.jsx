@@ -1,128 +1,242 @@
-import React, { useState } from "react";
-import { Pencil, Trash2, UserX, KeyRound, Users, UserCheck, UserX as InactiveIcon, Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import {
+  Pencil,
+  Trash2,
+  UserX,
+  KeyRound,
+  Users,
+  UserCheck,
+  UserX as InactiveIcon,
+  Search,
+  X
+} from "lucide-react";
+import api from "../../api/axios";
 
-export default function Allemployee() {
-  const originalData = [
-    { name: "Aman Gupta", email: "aman@gmail.com", dept: "Sales", status: "Active" },
-    { name: "Kirti Bhatt", email: "Kirti@gmail.com", dept: "HR", status: "Inactive" },
-    { name: "priya jamre", email: "Priya@gmail.com", dept: "HR", status: "Inactive" },
-    { name: "Neha Sharma", email: "Neha@gmail.com", dept: "seles", status: "Active" },
-    { name: "Saniya mehra", email: "Saniya@gmail.com", dept: "HR", status: "Inactive" },
-  ];
-
+export default function AllEmployee() {
+  const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
 
-  const data = originalData.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()) ||
-    item.email.toLowerCase().includes(search.toLowerCase()) ||
-    item.dept.toLowerCase().includes(search.toLowerCase()) ||
-    item.status.toLowerCase().includes(search.toLowerCase())
+  const [openModal, setOpenModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    mobile: ""
+  });
+
+  const getAllEmployees = async () => {
+    try {
+      const res = await api.get("/employees/get-all");
+      setEmployees(res.data.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getAllEmployees();
+  }, []);
+
+  const createEmployee = async (e) => {
+    e.preventDefault();
+    await api.post("/employees/create", formData);
+    setOpenModal(false);
+    resetForm();
+    getAllEmployees();
+  };
+
+  const updateEmployee = async (e) => {
+    e.preventDefault();
+    await api.put(`/employees/update/${selectedId}`, formData);
+    setEditModal(false);
+    resetForm();
+    getAllEmployees();
+  };
+
+  const deleteEmployee = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
+    await api.delete(`/employees/delete/${id}`);
+    getAllEmployees();
+  };
+
+  const resetForm = () => {
+    setFormData({ username: "", email: "", password: "", mobile: "" });
+    setSelectedId(null);
+  };
+
+  const openEdit = (emp) => {
+    setSelectedId(emp._id);
+    setFormData({
+      username: emp.username,
+      email: emp.email,
+      password: "",
+      mobile: emp.mobile || ""
+    });
+    setEditModal(true);
+  };
+
+  const data = employees.filter(
+    (e) =>
+      e.username?.toLowerCase().includes(search.toLowerCase()) ||
+      e.email?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const totalEmp = originalData.length;
-  const activeEmp = originalData.filter((e) => e.status === "Active").length;
-  const inactiveEmp = originalData.filter((e) => e.status === "Inactive").length;
+  const totalEmp = employees.length;
+  const activeEmp = employees.filter(e => e.is_active !== false).length;
+  const inactiveEmp = totalEmp - activeEmp;
 
   return (
-    <div className=" p-8 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 lg:p-8 bg-white min-h-screen">
 
-      {/* PAGE TITLE + SEARCH BAR + ADD BUTTON */}
-      <div className="flex justify-between items-center mb-6">
-        
-        {/* Title */}
-        <h1 className="text-3xl font-bold text-purple-700">Employee Management</h1>
+      {/* HEADER */}
+      <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-green-600">
+          Employee Management
+        </h1>
 
-        {/* Search Bar */}
-        <div className="flex items-center bg-white shadow border border-gray-300 px-3 py-2 rounded-xl w-72">
-          <Search className="text-gray-500 mr-2" size={20} />
+        <div className="flex items-center bg-white border shadow px-3 py-2 rounded-xl w-full sm:w-72">
+          <Search size={18} className="mr-2 text-gray-500" />
           <input
-            type="text"
             placeholder="Search Employee..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full outline-none text-gray-700"
+            className="w-full outline-none"
           />
         </div>
 
-        {/* Add Button */}
-        <button className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-xl shadow-md transition">
+        <button
+          onClick={() => setOpenModal(true)}
+          className="bg-black text-white px-5 py-2 rounded-xl hover:bg-green-600 w-full sm:w-auto"
+        >
           + Add Employee
         </button>
       </div>
 
-      {/* TOP CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-
-        {/* Total Employees */}
-        <div className="bg-white shadow-lg p-6 rounded-xl border border-gray-200 flex gap-4 items-center hover:shadow-xl transition">
-          <Users size={40} className="text-purple-700" />
-          <div>
-            <h3 className="text-lg font-bold text-gray-700">Total Employees</h3>
-            <p className="text-2xl font-bold text-purple-700">{totalEmp}</p>
-          </div>
-        </div>
-
-        {/* Active Employees */}
-        <div className="bg-white shadow-lg p-6 rounded-xl border border-gray-200 flex gap-4 items-center hover:shadow-xl transition">
-          <UserCheck size={40} className="text-green-600" />
-          <div>
-            <h3 className="text-lg font-bold text-gray-700">Active Employees</h3>
-            <p className="text-2xl font-bold text-green-600">{activeEmp}</p>
-          </div>
-        </div>
-
-        {/* Inactive Employees */}
-        <div className="bg-white shadow-lg p-6 rounded-xl border border-gray-200 flex gap-4 items-center hover:shadow-xl transition">
-          <InactiveIcon size={40} className="text-red-600" />
-          <div>
-            <h3 className="text-lg font-bold text-gray-700">Inactive Employees</h3>
-            <p className="text-2xl font-bold text-red-600">{inactiveEmp}</p>
-          </div>
-        </div>
+      {/* CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <StatCard title="Total Employees" value={totalEmp} icon={<Users />} />
+        <StatCard title="Active Employees" value={activeEmp} icon={<UserCheck />} />
+        <StatCard title="Inactive Employees" value={inactiveEmp} icon={<InactiveIcon />} />
       </div>
 
-      {/* EMPLOYEE TABLE */}
-      <div className="bg-white shadow-xl rounded-xl overflow-hidden border border-gray-200">
-        <table className="w-full">
-          <thead className="bg-purple-700 text-white">
+      {/* TABLE */}
+      <div className="overflow-x-auto shadow rounded-xl border">
+        <table className="min-w-[700px] w-full">
+
+          {/* HEADER – GREEN */}
+          <thead className="bg-green-600 text-white">
             <tr>
               <th className="p-4 text-left">Name</th>
               <th className="p-4 text-left">Email</th>
-              <th className="p-4 text-left">Department</th>
-              <th className="p-4 text-left">Status</th>
+              <th className="p-4 text-left">Role</th>
               <th className="p-4 text-center">Actions</th>
             </tr>
           </thead>
 
-          <tbody>
-            {data.map((item, i) => (
+          {/* BODY – BLACK */}
+          <tbody className="bg-black text-white">
+            {data.map((item) => (
               <tr
-                key={i}
-                className="border-b hover:bg-pink-50 transition"
+                key={item._id}
+                className="border-b border-gray-700 hover:bg-gray-900 transition"
               >
-                <td className="p-4 text-gray-700 font-medium">{item.name}</td>
-                <td className="p-4 text-gray-600">{item.email}</td>
-                <td className="p-4 text-gray-600">{item.dept}</td>
+                <td className="p-4">{item.username}</td>
+                <td className="p-4">{item.email}</td>
 
-                <td
-                  className={`p-4 font-semibold ${
-                    item.status === "Active" ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {item.status}
+                {/* ROLE – DARK GREEN */}
+                <td className="p-4 font-semibold text-green-400 capitalize">
+                  {item.role}
                 </td>
 
                 <td className="p-4 flex gap-4 justify-center">
-                  <Pencil className="text-blue-600 cursor-pointer hover:scale-110 transition" />
-                  <Trash2 className="text-red-600 cursor-pointer hover:scale-110 transition" />
-                  <KeyRound className="text-yellow-500 cursor-pointer hover:scale-110 transition" />
-                  <UserX className="text-purple-700 cursor-pointer hover:scale-110 transition" />
+                  <Pencil
+                    onClick={() => openEdit(item)}
+                    className="cursor-pointer text-blue-400 hover:scale-110"
+                  />
+                  <Trash2
+                    onClick={() => deleteEmployee(item._id)}
+                    className="cursor-pointer text-red-400 hover:scale-110"
+                  />
+                  <KeyRound className="cursor-pointer text-yellow-400 hover:scale-110" />
+                  <UserX className="cursor-pointer text-gray-400 hover:scale-110" />
                 </td>
               </tr>
             ))}
           </tbody>
 
         </table>
+      </div>
+
+      {openModal && (
+        <Modal
+          title="Create Employee"
+          onClose={() => setOpenModal(false)}
+          onSubmit={createEmployee}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      )}
+
+      {editModal && (
+        <Modal
+          title="Update Employee"
+          onClose={() => setEditModal(false)}
+          onSubmit={updateEmployee}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      )}
+    </div>
+  );
+}
+
+/* =========================
+   STAT CARD
+========================= */
+function StatCard({ title, value, icon }) {
+  return (
+    <div className="bg-black text-white p-5 rounded-xl flex items-center gap-4">
+      <div className="text-green-500">{icon}</div>
+      <div>
+        <p className="text-gray-300">{title}</p>
+        <h2 className="text-2xl font-bold text-green-500">{value}</h2>
+      </div>
+    </div>
+  );
+}
+
+/* =========================
+   MODAL
+========================= */
+function Modal({ title, onClose, onSubmit, formData, setFormData }) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-black text-white w-full max-w-md rounded-xl p-6 relative">
+        <X onClick={onClose} className="absolute right-4 top-4 cursor-pointer text-gray-400" />
+
+        <h2 className="text-xl font-bold mb-4 text-green-500">{title}</h2>
+
+        <form onSubmit={onSubmit} className="space-y-3">
+          {["username", "email", "password", "mobile"].map((field) => (
+            <input
+              key={field}
+              type={field === "password" ? "password" : "text"}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              value={formData[field]}
+              onChange={(e) =>
+                setFormData({ ...formData, [field]: e.target.value })
+              }
+              className="w-full p-2 rounded bg-white text-black"
+            />
+          ))}
+
+          <button className="w-full bg-green-600 py-2 rounded hover:bg-green-700">
+            {title}
+          </button>
+        </form>
       </div>
     </div>
   );

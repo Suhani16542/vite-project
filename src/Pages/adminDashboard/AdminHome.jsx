@@ -1,6 +1,7 @@
 import React from "react";
 import { Users, FileText, Clock, CheckCircle2, AlertCircle } from "lucide-react";
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
+
 export default function AdminHome() {
   const stats = {
     totalUsers: 450,
@@ -28,63 +29,101 @@ export default function AdminHome() {
     { name: "Rohan Singh", email: "rohan@example.com", status: "Active" },
   ];
 
-  const cardStyle = "bg-gradient-to-r from-purple-700 to-pink-300 text-white rounded-lg p-4 flex items-center gap-4 shadow-lg";
+  /* 🔥 CARD THEME FIXED */
+  const cardStyle =
+    "bg-[#0B0F0E] border border-[#1F2937] rounded-xl p-4 flex items-center gap-4 \
+     shadow-md hover:shadow-green-500/20 transition text-white";
+
+  const cardIcon =
+    "p-2 rounded-lg bg-[#111827] text-green-500";
 
   return (
     <div className="p-4 md:p-6 w-full space-y-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
 
-      {/* Top Stats Cards */}
+      <h1 className="text-2xl md:text-3xl font-bold text-green-400">
+        Admin Dashboard
+      </h1>
+
+      {/* Top Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className={cardStyle}><Users size={32} /><div><p className="text-sm">Total Users</p><h2 className="text-xl font-bold">{stats.totalUsers}</h2></div></div>
-        <div className={cardStyle}><FileText size={32} /><div><p className="text-sm">Total Requests</p><h2 className="text-xl font-bold">{stats.totalRequests}</h2></div></div>
-        <div className={cardStyle}><CheckCircle2 size={32} /><div><p className="text-sm">Completed</p><h2 className="text-xl font-bold">{stats.completedRequests}</h2></div></div>
-        <div className={cardStyle}><AlertCircle size={32} /><div><p className="text-sm">Pending</p><h2 className="text-xl font-bold">{stats.pendingRequests}</h2></div></div>
-        <div className={cardStyle}><Clock size={32} /><div><p className="text-sm">Today Requests</p><h2 className="text-xl font-bold">{stats.todayRequests}</h2></div></div>
-      </div>
+        <div className={cardStyle}>
+          <div className={cardIcon}><Users size={24} /></div>
+          <div>
+            <p className="text-sm text-gray-400">Total Users</p>
+            <h2 className="text-xl font-bold text-green-400">{stats.totalUsers}</h2>
+          </div>
+        </div>
 
-      {/* Recent Users */}
-      <div>
-        <h2 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">Recent User Accounts</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {recentUsers.map((user, idx) => (
-            <div key={idx} className="bg-white rounded-lg shadow p-4 flex flex-col gap-2">
-              <p className="font-semibold">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
-              <p className={`text-sm font-medium ${user.status === "Active" ? "text-green-600" : "text-red-500"}`}>{user.status}</p>
-            </div>
-          ))}
+        <div className={cardStyle}>
+          <div className={cardIcon}><FileText size={24} /></div>
+          <div>
+            <p className="text-sm text-gray-400">Total Requests</p>
+            <h2 className="text-xl font-bold text-green-400">{stats.totalRequests}</h2>
+          </div>
+        </div>
+
+        <div className={cardStyle}>
+          <div className={cardIcon}><CheckCircle2 size={24} /></div>
+          <div>
+            <p className="text-sm text-gray-400">Completed</p>
+            <h2 className="text-xl font-bold text-green-400">{stats.completedRequests}</h2>
+          </div>
+        </div>
+
+        <div className={cardStyle}>
+          <div className={cardIcon}><AlertCircle size={24} /></div>
+          <div>
+            <p className="text-sm text-gray-400">Pending</p>
+            <h2 className="text-xl font-bold text-green-400">{stats.pendingRequests}</h2>
+          </div>
+        </div>
+
+        <div className={cardStyle}>
+          <div className={cardIcon}><Clock size={24} /></div>
+          <div>
+            <p className="text-sm text-gray-400">Today Requests</p>
+            <h2 className="text-xl font-bold text-green-400">{stats.todayRequests}</h2>
+          </div>
         </div>
       </div>
 
-      {/* Recent Employees */}
-      <div>
-        <h2 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">Recent Employees Joined</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {recentEmployees.map((emp, idx) => (
-            <div key={idx} className="bg-white rounded-lg shadow p-4 flex flex-col gap-2">
-              <p className="font-semibold">{emp.name}</p>
-              <p className="text-sm text-gray-500">{emp.email}</p>
-              <p className="text-sm text-gray-500">Joined: {emp.join}</p>
-              <p className={`text-sm font-medium ${emp.status === "Active" ? "text-green-600" : "text-red-500"}`}>{emp.status}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Reusable Section Card */}
+      {[
+        { title: "Recent User Accounts", data: recentUsers },
+        { title: "Recent Employees Joined", data: recentEmployees },
+        { title: "Employees Active Today", data: activeToday },
+      ].map((section, i) => (
+        <div key={i}>
+          <h2 className="text-xl md:text-2xl font-semibold mb-3 text-green-400">
+            {section.title}
+          </h2>
 
-      {/* Active Today */}
-      <div>
-        <h2 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">Employees Active Today</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {activeToday.map((emp, idx) => (
-            <div key={idx} className="bg-white rounded-lg shadow p-4 flex flex-col gap-2">
-              <p className="font-semibold">{emp.name}</p>
-              <p className="text-sm text-gray-500">{emp.email}</p>
-              <p className={`text-sm font-medium ${emp.status === "Active" ? "text-green-600" : "text-red-500"}`}>{emp.status}</p>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {section.data.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-[#0B0F0E] border border-[#1F2937] rounded-xl p-4 shadow-md
+                           hover:border-green-500/40 transition"
+              >
+                <p className="font-semibold text-white">{item.name}</p>
+                <p className="text-sm text-gray-400">{item.email}</p>
+                {item.join && (
+                  <p className="text-sm text-gray-400">Joined: {item.join}</p>
+                )}
+                <p
+                  className={`text-sm font-medium ${
+                    item.status === "Active"
+                      ? "text-green-500"
+                      : "text-red-400"
+                  }`}
+                >
+                  {item.status}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }

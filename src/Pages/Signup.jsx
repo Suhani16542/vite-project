@@ -7,7 +7,7 @@ export default function Signup() {
     username: "",
     email: "",
     mobile: "",
-    role: "user", // ✅ FIXED
+    role: "user",
     password: "",
     agree: false,
   });
@@ -32,7 +32,6 @@ export default function Signup() {
     if (!formData.mobile.trim()) newErrors.mobile = "Mobile required";
     if (!formData.password.trim()) newErrors.password = "Password required";
     if (!formData.agree) newErrors.agree = "Accept terms & conditions";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -46,18 +45,11 @@ export default function Signup() {
         "http://localhost:3000/api/v1/user/signup",
         formData
       );
-
-      console.log("Signup success:", res.data);
-
-      // ✅ move to OTP screen
       setUserEmail(res.data.user.email);
       setShowOtp(true);
-
     } catch (err) {
-      console.error("Signup error:", err.response?.data);
-
       if (err.response?.data?.errors) {
-        alert(err.response.data.errors[0]); // show backend error
+        alert(err.response.data.errors[0]);
       }
     }
   };
@@ -67,45 +59,116 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-emerald-700 mb-6">
-          Sign Up
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-black via-green-950 to-black p-4">
+
+      <div className="bg-gray-900 rounded-2xl p-10 max-w-md w-full shadow-2xl border border-green-800">
+
+        <h2 className="text-3xl font-bold text-center text-green-400 mb-6">
+          Create Account
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="w-full p-3 border rounded-lg" />
-          {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+        <form onSubmit={handleSubmit} className="space-y-5">
 
-          <input name="email" value={formData.email} onChange={handleChange} placeholder="Email" className="w-full p-3 border rounded-lg" />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+          {/* Username */}
+          <div>
+            <label className="block text-green-200 mb-1">Username</label>
+            <input
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl bg-black text-white border border-green-700 focus:ring-2 focus:ring-green-500 outline-none"
+            />
+            {errors.username && (
+              <p className="text-red-400 text-sm mt-1">{errors.username}</p>
+            )}
+          </div>
 
-          <input name="mobile" value={formData.mobile} onChange={handleChange} placeholder="Mobile" className="w-full p-3 border rounded-lg" />
-          {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
+          {/* Email */}
+          <div>
+            <label className="block text-green-200 mb-1">Email</label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl bg-black text-white border border-green-700 focus:ring-2 focus:ring-green-500 outline-none"
+            />
+            {errors.email && (
+              <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+            )}
+          </div>
 
-          <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border rounded-lg bg-gray-50">
-            <option value="user">user</option>
-            <option value="employee">employee</option>
-            <option value="subadmin">subadmin</option>
-          </select>
+          {/* Mobile */}
+          <div>
+            <label className="block text-green-200 mb-1">Mobile</label>
+            <input
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl bg-black text-white border border-green-700 focus:ring-2 focus:ring-green-500 outline-none"
+            />
+            {errors.mobile && (
+              <p className="text-red-400 text-sm mt-1">{errors.mobile}</p>
+            )}
+          </div>
 
-          <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="w-full p-3 border rounded-lg" />
-          {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+          {/* Role */}
+          <div>
+            <label className="block text-green-200 mb-1">Role</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl bg-black text-white border border-green-700 focus:ring-2 focus:ring-green-500 outline-none"
+            >
+              <option value="user">user</option>
+              <option value="employee">employee</option>
+              <option value="subadmin">subadmin</option>
+            </select>
+          </div>
 
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} />
+          {/* Password */}
+          <div>
+            <label className="block text-green-200 mb-1">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 rounded-xl bg-black text-white border border-green-700 focus:ring-2 focus:ring-green-500 outline-none"
+            />
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+            )}
+          </div>
+
+          {/* Agree */}
+          <label className="flex items-center gap-2 text-sm text-green-300">
+            <input
+              type="checkbox"
+              name="agree"
+              checked={formData.agree}
+              onChange={handleChange}
+            />
             I agree to Terms & Conditions
           </label>
-          {errors.agree && <p className="text-red-500 text-sm">{errors.agree}</p>}
+          {errors.agree && (
+            <p className="text-red-400 text-sm">{errors.agree}</p>
+          )}
 
+          {/* Button */}
           <button
             type="submit"
             disabled={!formData.agree}
-            className={`w-full py-3 text-white rounded-lg font-semibold 
-              ${formData.agree ? "bg-emerald-600 hover:bg-emerald-700" : "bg-gray-400 cursor-not-allowed"}`}
+            className={`w-full py-3 rounded-xl font-semibold
+              ${
+                formData.agree
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-gray-600 cursor-not-allowed text-gray-300"
+              }`}
           >
             Sign Up
           </button>
+
         </form>
       </div>
     </div>

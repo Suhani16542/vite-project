@@ -29,39 +29,59 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white py-4 px-6 shadow-md flex items-center justify-between rounded-b-2xl">
-
+    <header
+      className="
+        w-full
+        bg-gradient-to-r from-[#000000] via-[#052e16] to-[#065f46]
+        text-white
+        py-4 px-6
+        shadow-md
+        flex items-center justify-between
+        rounded-b-2xl
+      "
+    >
       {/* LEFT */}
       <div>
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-green-400">
           Welcome {user?.username || ""}
         </h2>
-        <p className="text-white/80 text-sm">{dateTime}</p>
+        <p className="text-gray-300 text-sm">{dateTime}</p>
       </div>
 
       {/* RIGHT */}
       <div className="flex items-center gap-5 relative">
-        <Bell className="w-6 h-6" />
+        <Bell className="w-6 h-6 text-green-400" />
 
         {/* Avatar */}
-        <div className="w-9 h-9 rounded-full bg-white text-blue-700 flex items-center justify-center font-bold">
-          <p>{user?.username?.charAt(0).toUpperCase()}</p>
+        <div className="w-9 h-9 rounded-full bg-green-500 text-black flex items-center justify-center font-bold">
+          {user?.username?.charAt(0)?.toUpperCase()}
         </div>
 
         <div className="relative">
           <button onClick={() => setMenuOpen(!menuOpen)}>
-            <MoreVertical className="w-6 h-6" />
+            <MoreVertical className="w-6 h-6 text-green-400" />
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white text-blue-700 rounded-lg shadow-lg py-2">
-              <button className="px-4 py-2 flex gap-2 w-full hover:bg-blue-50">
+            <div
+              className="
+                absolute right-0 mt-2 w-40
+                bg-[#000000]
+                text-white
+                rounded-lg shadow-lg
+                py-2
+                border border-green-600
+              "
+            >
+              <button className="px-4 py-2 flex gap-2 w-full hover:bg-green-600/20">
                 <User size={16} /> Profile
               </button>
-              <button className="px-4 py-2 flex gap-2 w-full hover:bg-blue-50">
+
+              <button className="px-4 py-2 flex gap-2 w-full hover:bg-green-600/20">
                 <Settings size={16} /> Settings
               </button>
-              <button className="px-4 py-2 flex gap-2 w-full text-red-600 hover:bg-red-50">
+
+              <button className="px-4 py-2 flex gap-2 w-full text-red-500 hover:bg-red-500/20">
                 <LogOut size={16} /> Logout
               </button>
             </div>

@@ -18,48 +18,44 @@ const Billing = () => {
   );
 
   return (
-    <section className="p-6 space-y-8 bg-white text-black min-h-screen">
+    <section className="p-4 sm:p-6 space-y-8 bg-gray-100 min-h-screen">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
-        <h1 className="text-2xl font-semibold text-purple-700">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h1 className="text-2xl font-semibold text-green-700">
           Billing & Invoice Management
         </h1>
 
-        {/* Search Bar */}
-        <div className="relative">
+        {/* SEARCH */}
+        <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-3 text-gray-500" size={18} />
           <input
             type="text"
             placeholder="Search invoice or user..."
-            className="bg-white text-black pl-10 pr-4 py-2 rounded-xl w-72
-                       outline-none border border-purple-700 
-                       focus:ring-2 focus:ring-pink-600 transition-all"
+            className="w-full bg-white text-black pl-10 pr-4 py-2 rounded-xl
+                       border border-gray-300 outline-none
+                       focus:ring-2 focus:ring-green-600"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
 
-      {/* INVOICE TABLE CARD */}
-      <div
-        className="
-          bg-white p-6 rounded-2xl 
-          border border-purple-700
-          shadow-md
-        "
-      >
-        <h2 className="text-xl font-semibold pb-5 text-purple-700">Invoice Records</h2>
+      {/* TABLE CARD */}
+      <div className="bg-black text-white p-4 sm:p-6 rounded-2xl shadow-md">
+        <h2 className="text-xl font-semibold pb-5 text-green-400">
+          Invoice Records
+        </h2>
 
-        <div className="overflow-x-auto rounded-xl">
-          <table className="w-full border-collapse text-black">
-            <thead className="bg-purple-100 text-purple-700">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[900px] border-collapse text-sm">
+            <thead className="bg-gray-900 text-green-400">
               <tr>
                 <th className="py-3 px-4 text-left">Invoice ID</th>
                 <th className="py-3 px-4 text-left">User</th>
                 <th className="py-3 px-4 text-left">Date</th>
                 <th className="py-3 px-4 text-left">Amount</th>
-                <th className="py-3 px-4 text-left">Payment Method</th>
+                <th className="py-3 px-4 text-left">Method</th>
                 <th className="py-3 px-4 text-left">Status</th>
                 <th className="py-3 px-4 text-left">Download</th>
               </tr>
@@ -69,45 +65,41 @@ const Billing = () => {
               {filtered.map((inv) => (
                 <tr
                   key={inv.id}
-                  className="border-t border-gray-300 hover:bg-gray-100 transition"
+                  className="border-t border-gray-700 hover:bg-gray-900 transition"
                 >
-                  <td className="py-3 px-4 font-medium">{inv.id}</td>
+                  <td className="py-3 px-4">{inv.id}</td>
                   <td className="py-3 px-4">{inv.user}</td>
                   <td className="py-3 px-4">{inv.date}</td>
 
-                  {/* Amount */}
-                  <td className="py-3 px-4 flex items-center gap-1 text-purple-700">
+                  <td className="py-3 px-4 flex items-center gap-1 text-green-400">
                     <IndianRupee size={14} />
                     {inv.amount}
                   </td>
 
-                  {/* Payment Method */}
-                  <td className="py-3 px-4 text-gray-700">{inv.method}</td>
+                  <td className="py-3 px-4 text-gray-300">{inv.method}</td>
 
-                  {/* STATUS BADGE */}
                   <td className="py-3 px-4">
                     <span
-                      className={`px-3 py-1 rounded-lg text-xs ${
+                      className={`px-3 py-1 rounded-lg text-xs font-medium ${
                         inv.status === "Paid"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-green-600/20 text-green-400"
                           : inv.status === "Pending"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-yellow-600/20 text-yellow-400"
+                          : "bg-red-600/20 text-red-400"
                       }`}
                     >
                       {inv.status}
                     </span>
                   </td>
 
-                  {/* DOWNLOAD BUTTON */}
                   <td className="py-3 px-4">
                     <button
                       className="flex items-center gap-2 px-3 py-1 rounded-lg
-                                 bg-purple-100 text-purple-700
-                                 hover:bg-purple-200 transition"
+                                 bg-gray-800 text-green-400
+                                 hover:bg-gray-700 transition"
                     >
-                      <Download size={18} />
-                      <span className="text-sm">Invoice</span>
+                      <Download size={16} />
+                      <span>Invoice</span>
                     </button>
                   </td>
                 </tr>
@@ -115,7 +107,7 @@ const Billing = () => {
 
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan="7" className="py-4 text-center text-gray-500 italic">
+                  <td colSpan="7" className="py-4 text-center text-gray-400 italic">
                     No invoices found
                   </td>
                 </tr>
@@ -123,7 +115,6 @@ const Billing = () => {
             </tbody>
           </table>
         </div>
-
       </div>
     </section>
   );
