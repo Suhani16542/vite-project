@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Bell, MoreVertical, LogOut, Settings, User } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom"; // ✅ added
 
 export default function Header() {
   const [dateTime, setDateTime] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate(); // ✅ added
 
   useEffect(() => {
     const update = () => {
@@ -27,6 +29,13 @@ export default function Header() {
     const timer = setInterval(update, 60000);
     return () => clearInterval(timer);
   }, []);
+
+  // ✅ Logout handler added
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <header
@@ -81,7 +90,11 @@ export default function Header() {
                 <Settings size={16} /> Settings
               </button>
 
-              <button className="px-4 py-2 flex gap-2 w-full text-red-500 hover:bg-red-500/20">
+              {/* ✅ Logout Updated */}
+              <button 
+                onClick={handleLogout}
+                className="px-4 py-2 flex gap-2 w-full text-red-500 hover:bg-red-500/20"
+              >
                 <LogOut size={16} /> Logout
               </button>
             </div>

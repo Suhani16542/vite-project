@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // ✅ useNavigate added
 import {
   Home,
   LayoutGrid,
@@ -14,6 +14,14 @@ import {
 
 export default function Sidebar({ menuItems = [] }) {
   const [open, setOpen] = useState(true);
+  const navigate = useNavigate(); // ✅ added
+
+  // ✅ Logout handler added
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <>
@@ -84,7 +92,11 @@ export default function Sidebar({ menuItems = [] }) {
             </button>
           </NavLink>
 
-          <button className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/20 rounded-lg transition group">
+          {/* ✅ Logout Working */}
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/20 rounded-lg transition group"
+          >
             <LogOut className="w-5 h-5 group-hover:scale-110 transition" />
             Logout
           </button>

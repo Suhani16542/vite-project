@@ -78,7 +78,8 @@ function App() {
         <Route path="/" element={<Navbar />}>
           <Route index element={<Landing />} />
             <Route path="search" element={<SearchResults/> } />
-            <Route path='formdetial' element={<FormDetail/>}/>
+     
+
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
           <Route path="about" element={<About />} />
@@ -98,6 +99,7 @@ function App() {
             element={<PublicFormList />}
           />
           <Route path="/form/:slug" element={<ApplyForm />} />
+           <Route path="form-detail/:slug" element={<FormDetail />} />
 
         </Route>
 

@@ -1,13 +1,13 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 
 function Landing() {
 
-    const navigate = useNavigate()
-//  / 🔹 Search states
- const [showDemo, setShowDemo] = useState(false);
+  const navigate = useNavigate()
+  //  / 🔹 Search states
+  const [showDemo, setShowDemo] = useState(false);
 
   const [searchText, setSearchText] = useState("");
   const [mainCategory, setMainCategory] = useState("");
@@ -47,9 +47,9 @@ function Landing() {
 
     const fetchSubCategories = async () => {
       try {
-       const res = await api.get(
-  `/categories/${mainCategory}/sub`
-);
+        const res = await api.get(
+          `/categories/${mainCategory}/sub`
+        );
 
         setSubCategories(res.data.data);
       } catch (error) {
@@ -63,67 +63,88 @@ function Landing() {
   /* ===============================
      SEARCH FORMS
   =============================== */
-const handleSearch = () => {
-  navigate(
-    `/search?search=${searchText}&mainCategory=${mainCategory}&subCategory=${subCategory}`
-  );
-};
+  const handleSearch = () => {
+    navigate(
+      `/search?search=${searchText}&mainCategory=${mainCategory}&subCategory=${subCategory}`
+    );
+  };
 
 
   return (
     <>
 
-  <section className="bg-slate-950 py-10 px-6">
-  <div className="max-w-5xl mx-auto text-center">
+      <section className="bg-slate-950 py-10 px-6">
+        <div className="max-w-5xl mx-auto text-center">
 
-    {/* Heading (Smaller) */}
-    <h2 className="text-2xl font-bold text-white mb-3">
-      Find Your <span className="text-emerald-400">Form</span>
-    </h2>
+          {/* Heading (Smaller) */}
+          <h2 className="text-2xl font-bold text-white mb-3">
+            Find Your <span className="text-emerald-400">Form</span>
+          </h2>
 
-    <p className="text-slate-400 text-sm mb-6">
-      Search by form name or filter by category
-    </p>
+          <p className="text-slate-400 text-sm mb-6">
+            Search by form name or filter by category
+          </p>
 
-    {/* Search Input */}
-    <div className="max-w-2xl mx-auto mb-5">
-      <input
-        type="text"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        placeholder="Search form name (SSC GD 2026, JEE Main...)"
-        className="w-full p-3 rounded-lg bg-slate-900 text-white border border-emerald-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-      />
-    </div>
+          {/* Search Input */}
+          <div className="max-w-2xl mx-auto mb-5">
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              placeholder="Search form name (SSC GD 2026, JEE Main...)"
+              className="w-full p-3 rounded-lg bg-slate-900 text-white border border-emerald-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
 
-    {/* Main Category + Search Button */}
-    <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+          {/* Main Category + Search Button */}
+          <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
 
-      {/* Main Category Only */}
-      <select
-        value={mainCategory}
-        onChange={(e) => setMainCategory(e.target.value)}
-        className="p-3 rounded-lg bg-slate-900 text-white border border-emerald-800 focus:outline-none w-full md:w-64"
-      >
-        <option value="">Select Category</option>
-        {mainCategories.map((cat) => (
-          <option key={cat._id} value={cat.slug}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
+            {/* Main Category */}
+            <select
+              value={mainCategory}
+              onChange={(e) => {
+                setMainCategory(e.target.value);
+                setSubCategory("");
+              }}
+              className="p-3 rounded-lg bg-slate-900 text-white border border-emerald-800 focus:outline-none w-full md:w-64"
+            >
+              <option value="">Select Category</option>
+              {mainCategories.map((cat) => (
+                <option key={cat._id} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
 
-      {/* Search Button */}
-      <button
-        onClick={handleSearch}
-        className="px-6 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition w-full md:w-auto"
-      >
-        {loading ? "Searching..." : "Search Forms"}
-      </button>
-    </div>
-  </div>
-</section>
+            {/* Sub Category */}
+            {subCategories.length > 0 && (
+              <select
+                value={subCategory}
+                onChange={(e) => setSubCategory(e.target.value)}
+                className="p-3 rounded-lg bg-slate-900 text-white border border-emerald-800 focus:outline-none w-full md:w-64"
+              >
+                <option value="">Select Sub Category</option>
+                {subCategories.map((sub) => (
+                  <option key={sub._id} value={sub.slug}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {/* Search Button */}
+            <button
+              onClick={handleSearch}
+              className="px-6 py-3 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition w-full md:w-auto"
+            >
+              {loading ? "Searching..." : "Search Forms"}
+            </button>
+
+          </div>
+
+        </div>
+      </section>
 
 
 
@@ -150,12 +171,12 @@ const handleSearch = () => {
                 </button>
               </Link>
 
-             <button
-  onClick={() => setShowDemo(true)}
-  className="border border-emerald-400 text-emerald-400 font-semibold px-6 py-2 rounded-full hover:bg-emerald-500 hover:text-black transition"
->
-  Get Demo
-</button>
+              <button
+                onClick={() => setShowDemo(true)}
+                className="border border-emerald-400 text-emerald-400 font-semibold px-6 py-2 rounded-full hover:bg-emerald-500 hover:text-black transition"
+              >
+                Get Demo
+              </button>
 
             </div>
           </div>
@@ -242,8 +263,8 @@ const handleSearch = () => {
           ))}
         </div>
       </section>
-  {/* 🔍 SEARCH SECTION */}
-    ================= SEARCH SECTION =================
+      {/* 🔍 SEARCH SECTION */}
+      {/* ================= SEARCH SECTION ================= */}
 
 
 
@@ -366,45 +387,46 @@ const handleSearch = () => {
             🚀 Get Started
           </button>
           <button
-  onClick={() => setShowDemo(true)}
-  className="border border-emerald-400 py-3 px-8 rounded-full font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-black transition"
->
-  🎥 Watch Demo
-</button>
+            onClick={() => setShowDemo(true)}
+            className="border border-emerald-400 py-3 px-8 rounded-full font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-black transition"
+          >
+            🎥 Watch Demo
+          </button>
 
         </div>
       </section>
 
       {/* ================= DEMO VIDEO MODAL ================= */}
-{showDemo && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-    
-    <div className="relative w-[90%] max-w-3xl bg-black rounded-xl overflow-hidden border border-emerald-800 shadow-2xl">
-      
-      {/* ❌ Close Button */}
-      <button
-        onClick={() => setShowDemo(false)}
-        className="absolute top-3 right-3 text-white text-2xl hover:text-emerald-400"
-      >
-        ✕
-      </button>
+      {showDemo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
 
-      {/* 🎥 YouTube Video */}
-      <iframe
-        width="100%"
-        height="420"
-        src="https://www.youtube.com/embed/o0lXr4Eh4uI"
-        title="FillIt Demo Video"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
-    </div>
-  </div>
-)}
+          <div className="relative w-[90%] max-w-3xl bg-black rounded-xl overflow-hidden border border-emerald-800 shadow-2xl">
+
+            {/* ❌ Close Button */}
+            <button
+              onClick={() => setShowDemo(false)}
+              className="absolute top-3 right-3 text-white text-2xl hover:text-emerald-400"
+            >
+              ✕
+            </button>
+
+            {/* 🎥 YouTube Video */}
+            <iframe
+              width="100%"
+              height="420"
+              src="https://www.youtube.com/embed/o0lXr4Eh4uI"
+              title="FillIt Demo Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
 
     </>
   );
 }
 
 export default Landing;
+
